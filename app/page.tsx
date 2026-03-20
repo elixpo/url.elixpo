@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
 import Footer from './components/Footer';
+import Navbar from './components/Navbar';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -29,37 +29,7 @@ export default function LandingPage() {
         />
       </div>
 
-      {/* Nav */}
-      <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 flex items-center justify-between px-8 py-5 max-w-7xl mx-auto w-full"
-      >
-        <Link href="/" className="flex items-center gap-2.5 no-underline">
-          <Image src="/logo.png" alt="ElixpoURL" width={32} height={32} className="rounded-lg" />
-          <span className="text-xl font-display font-bold text-text-primary">
-            <span className="text-lime-main">Elixpo</span>URL
-          </span>
-        </Link>
-        <div className="flex items-center gap-6">
-          <Link href="/pricing" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
-            Pricing
-          </Link>
-          <Link href="/docs" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
-            Docs
-          </Link>
-          <Link href="/profile/keys" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
-            API Keys
-          </Link>
-          <Link href="/api/auth/login" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
-            Sign In
-          </Link>
-          <Link href="/api/auth/login" className="btn-lime no-underline text-sm">
-            Get Started
-          </Link>
-        </div>
-      </motion.nav>
+      <Navbar />
 
       {/* Hero */}
       <section className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-7xl mx-auto px-8 pt-16 pb-32 text-center">
