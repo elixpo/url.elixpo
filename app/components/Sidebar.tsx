@@ -5,15 +5,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { User } from '@/lib/types';
 
-// Deterministic avatar color from user ID
-function avatarColor(id: string): string {
-  const colors = ['#a3e635', '#86efac', '#fbbf24', '#c4b5fd', '#f87171', '#818cf8', '#34d399', '#fb923c'];
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
-  return colors[Math.abs(hash) % colors.length];
+// Build avatar URL from Elixpo Accounts
+function getAvatarUrl(user: User): string {
+  if (user.avatar_url) return user.avatar_url;
+  // Elixpo Accounts serves profile pictures at this endpoint
+  return `https://accounts.elixpo.com/api/avatar/${user.elixpo_id}`;
 }
 
-// SVG Icons as components
+// SVG Icons
 const Icons = {
   dashboard: (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
@@ -47,6 +46,11 @@ const Icons = {
       <path d="M10.2 9.8L16 4M14 4l2 2M12.5 6.5l2 2" />
     </svg>
   ),
+  logout: (
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+      <path d="M7 17H4a1 1 0 01-1-1V4a1 1 0 011-1h3M13 14l4-4-4-4M17 10H7" />
+    </svg>
+  ),
   monitor: (
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
       <rect x="2" y="3" width="16" height="11" rx="2" />
@@ -65,11 +69,6 @@ const Icons = {
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
       <path d="M5 3h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
       <path d="M6 7h8M6 10h8M6 13h4" />
-    </svg>
-  ),
-  logout: (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
-      <path d="M7 17H4a1 1 0 01-1-1V4a1 1 0 011-1h3M13 14l4-4-4-4M17 10H7" />
     </svg>
   ),
 };
@@ -93,10 +92,12 @@ const adminItems = [
 
 export default function Sidebar({ user }: { user: User }) {
   const pathname = usePathname();
-  const color = avatarColor(user.elixpo_id || user.email);
+  const avatarUrl = getAvatarUrl(user);
 
   const isActive = (href: string) => {
-    if (href === '/dashboard') return pathname === '/dashboard';
+    if (href === '/dashboard' || href === '/profile' || href === '/admin') {
+      return pathname === href;
+    }
     return pathname.startsWith(href);
   };
 
@@ -149,6 +150,16 @@ export default function Sidebar({ user }: { user: User }) {
         {accountItems.map((item) => (
           <NavLink key={item.href} {...item} />
         ))}
+        {/* Sign out as a nav item */}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-5 py-2.5 text-sm text-text-secondary hover:text-[#f87171] hover:bg-bg-glass transition-all duration-200 cursor-pointer bg-transparent border-none text-left"
+        >
+          <span className="w-5 flex items-center justify-center opacity-50">
+            {Icons.logout}
+          </span>
+          Sign Out
+        </button>
 
         {user.role === 'admin' && (
           <>
@@ -165,54 +176,25 @@ export default function Sidebar({ user }: { user: User }) {
       {/* User card */}
       <div className="px-4 py-4 border-t border-border-light">
         <Link href="/profile" className="flex items-center gap-3 no-underline group">
-          {/* Avatar */}
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden shrink-0 transition-transform duration-200 group-hover:scale-105"
-            style={{
-              background: `${color}18`,
-              border: `1.5px solid ${color}40`,
-              color,
-            }}
-          >
-            {user.avatar_url ? (
-              <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <span className="font-display">
-                {user.display_name.charAt(0).toUpperCase()}
-              </span>
-            )}
+          {/* Avatar from Elixpo Accounts */}
+          <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 transition-transform duration-200 group-hover:scale-105 border border-border-medium">
+            <img
+              src={avatarUrl}
+              alt={user.display_name}
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
           </div>
           {/* Info */}
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-text-primary truncate group-hover:text-lime-main transition-colors">
               {user.display_name}
             </div>
-            <div className="text-[0.65rem] text-text-disabled truncate">
+            <div className="text-[0.65rem] text-text-secondary truncate">
               {user.email}
             </div>
           </div>
         </Link>
-
-        {/* Tier + Logout row */}
-        <div className="flex items-center justify-between mt-3">
-          <span
-            className="text-[0.6rem] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md"
-            style={{
-              background: `${color}12`,
-              color,
-              border: `1px solid ${color}25`,
-            }}
-          >
-            {user.tier}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-[0.7rem] text-text-disabled hover:text-[#f87171] transition-colors cursor-pointer bg-transparent border-none p-0"
-          >
-            {Icons.logout}
-            <span>Sign out</span>
-          </button>
-        </div>
       </div>
     </aside>
   );

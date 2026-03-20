@@ -31,12 +31,12 @@ export default async function ProfilePage() {
         <div className="glass-card p-6">
           <h2 className="text-sm font-semibold mb-4">Account</h2>
           <div className="flex items-center gap-4 mb-5">
-            <div className="w-16 h-16 rounded-full bg-lime-dim border border-lime-border flex items-center justify-center text-2xl font-display font-bold text-lime-main overflow-hidden">
-              {user.avatar_url ? (
-                <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
-              ) : (
-                user.display_name.charAt(0).toUpperCase()
-              )}
+            <div className="w-16 h-16 rounded-full overflow-hidden border border-border-medium shrink-0">
+              <img
+                src={user.avatar_url || `https://accounts.elixpo.com/api/avatar/${user.elixpo_id}`}
+                alt={user.display_name}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <div className="text-lg font-semibold">{user.display_name}</div>

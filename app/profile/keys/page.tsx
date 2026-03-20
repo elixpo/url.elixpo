@@ -235,16 +235,15 @@ export default function ApiKeysPage() {
         )}
       </div>
 
-      {/* Usage example */}
-      <div className="glass-card p-6 mt-6">
-        <h2 className="text-sm font-semibold mb-3">API Usage</h2>
-        <div className="text-sm text-text-secondary mb-3">Use your API key to manage URLs programmatically:</div>
-        <pre className="p-4 rounded-xl text-xs overflow-x-auto font-mono leading-relaxed" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <code className="text-text-secondary">{`curl -X POST https://url.elixpo.com/api/urls \\
-  -H "Authorization: Bearer elu_YOUR_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{"url": "https://example.com"}'`}</code>
-        </pre>
+      {/* Docs link */}
+      <div className="mt-6 flex justify-center">
+        <a href="/docs#auth" className="btn-glass no-underline text-sm gap-2">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+            <path d="M5 3h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
+            <path d="M6 7h8M6 10h8M6 13h4" />
+          </svg>
+          Read API Documentation
+        </a>
       </div>
     </div>
   );

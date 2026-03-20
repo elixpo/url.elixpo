@@ -2,6 +2,14 @@
 
 const nextConfig = {
   experimental: {},
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'accounts.elixpo.com',
+      },
+    ],
+  },
 };
 
 // Setup Cloudflare bindings for local dev (next dev)
