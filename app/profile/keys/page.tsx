@@ -31,7 +31,7 @@ export default function ApiKeysPage() {
 
   const fetchKeys = async () => {
     const res = await fetch('/api/keys');
-    const data = await res.json();
+    const data: any = await res.json();
     setKeys(data.keys || []);
     setLoading(false);
   };
@@ -53,7 +53,7 @@ export default function ApiKeysPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, scopes }),
       });
-      const data = await res.json();
+      const data: any = await res.json();
       if (data.key) {
         setNewKey(data.key);
         setName('');

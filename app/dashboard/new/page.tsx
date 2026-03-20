@@ -41,7 +41,7 @@ export default function ShortenPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      const data = await res.json();
+      const data: any = await res.json();
       if (data.short_url) {
         setResult(data);
         setUrl('');

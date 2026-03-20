@@ -20,7 +20,7 @@ export default function AdminUsersPage() {
 
   const fetchUsers = async () => {
     const res = await fetch('/api/admin/users');
-    const data = await res.json();
+    const data: any = await res.json();
     setUsers(data.users || []);
     setLoading(false);
   };
@@ -35,7 +35,7 @@ export default function AdminUsersPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
-    const data = await res.json();
+    const data: any = await res.json();
     if (data.error) alert(data.error);
     else fetchUsers();
   };

@@ -21,7 +21,7 @@ export default function AuditLogPage() {
   const fetchLogs = async (p: number) => {
     setLoading(true);
     const res = await fetch(`/api/admin/audit?limit=50&offset=${(p - 1) * 50}`);
-    const data = await res.json();
+    const data: any = await res.json();
     setLogs(data.logs || []);
     setLoading(false);
   };
