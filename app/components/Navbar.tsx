@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -51,7 +51,14 @@ const navItems = [
 
 export default function Navbar() {
   const [hovered, setHovered] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => setIsLoggedIn(res.ok))
+      .catch(() => setIsLoggedIn(false));
+  }, []);
 
   return (
     <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50">
@@ -138,7 +145,7 @@ export default function Navbar() {
 
         {/* CTA */}
         <Link
-          href="/api/auth/login"
+          href={isLoggedIn ? '/dashboard' : '/api/auth/login'}
           className="flex items-center gap-2 no-underline px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all duration-200"
           style={{
             background: 'rgba(163, 230, 53, 0.15)',
@@ -158,7 +165,7 @@ export default function Navbar() {
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] as const }}
                 className="overflow-hidden whitespace-nowrap"
               >
-                Get Started
+                {isLoggedIn ? 'Dashboard' : 'Get Started'}
               </motion.span>
             )}
           </AnimatePresence>

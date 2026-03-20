@@ -152,8 +152,8 @@ export async function exchangeCode(code: string, requestUrl: string): Promise<OA
   const redirectUri = `${getOrigin(requestUrl)}/api/auth/callback`;
   const res = await fetch(`${ELIXPO_ACCOUNTS_BASE}/api/auth/token`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
       grant_type: 'authorization_code',
       code,
       client_id: env.NEXT_PUBLIC_ELIXPO_CLIENT_ID,
