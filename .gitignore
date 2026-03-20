@@ -4,7 +4,7 @@ dist/
 *.pem
 .env*.local
 .env
-.wrangler.toml
+wrangler.toml
 .dev.vars
 *.tsbuildinfo
 .vscode
