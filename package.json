@@ -1,5 +1,22 @@
 {
   "name": "elixpourl",
+  "version": "3.1.4",
+  "description": "Fast URL shortener built on Cloudflare's edge network — lightning-fast redirects, powerful analytics, and a developer-first API for the Elixpo ecosystem.",
+  "author": "Elixpo <hello@elixpo.com> (https://elixpo.com)",
+  "license": "UNLICENSED",
+  "homepage": "https://url.elixpo.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elixpo/elixpourl"
+  },
+  "keywords": [
+    "url-shortener",
+    "cloudflare-pages",
+    "next.js",
+    "edge",
+    "analytics",
+    "elixpo"
+  ],
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
