@@ -52,10 +52,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   return redirect(urlRecord.original_url);
 }
 
-/** Rewrite to the not-found page so the user sees a proper 404 UI */
+/** Redirect to the 404 page */
 function notFoundPage(request: NextRequest): NextResponse {
-  const url = new URL('/not-found', request.url);
-  return NextResponse.rewrite(url, { status: 404 });
+  return NextResponse.redirect(new URL('/not-found', request.url), 302);
 }
 
 /** Build a 302 redirect with cache-friendly headers */
