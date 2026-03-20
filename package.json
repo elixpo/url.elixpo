@@ -6,11 +6,12 @@
     "build": "next build",
     "start": "next start",
     "deploy": "npx @opennextjs/cloudflare build && npx wrangler deploy",
-    "db:migrate": "npx wrangler d1 execute elixpourl --file=./schema.sql",
-    "db:migrate:local": "npx wrangler d1 execute elixpourl --local --file=./schema.sql",
-    "db:migrate:remote": "npx wrangler d1 execute elixpourl --remote --file=./schema.sql"
+    "db:migrate": "npx wrangler d1 migrations apply elixpourl",
+    "db:migrate:local": "npx wrangler d1 migrations apply elixpourl --local",
+    "db:migrate:remote": "npx wrangler d1 migrations apply elixpourl --remote"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.12.0",
     "next": "^14.2.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0"
