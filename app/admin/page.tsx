@@ -4,10 +4,11 @@ import Link from 'next/link';
 
 export const runtime = 'edge';
 
-export default async function AdminPage({ searchParams }: { searchParams: { days?: string } }) {
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ days?: string }> }) {
+  const { days: daysParam } = await searchParams;
   const user = (await getCurrentUser())!;
   const db = getDB();
-  const days = parseInt(searchParams.days || '7');
+  const days = parseInt(daysParam || '7');
   const since = new Date(Date.now() - days * 86400000).toISOString();
 
   const [totalUsers, totalUrls, totalClicks, recentClicks, adminCount, timeline, topUrls, topCountries] = await Promise.all([

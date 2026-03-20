@@ -8,14 +8,15 @@ export const runtime = 'edge';
 export default async function UrlsPage({
   searchParams,
 }: {
-  searchParams: { page?: string; search?: string };
+  searchParams: Promise<{ page?: string; search?: string }>;
 }) {
+  const { page: pageParam, search: searchParam } = await searchParams;
   const user = (await getCurrentUser())!;
   const db = getDB();
-  const page = parseInt(searchParams.page || '1');
+  const page = parseInt(pageParam || '1');
   const limit = 20;
   const offset = (page - 1) * limit;
-  const search = searchParams.search || '';
+  const search = searchParam || '';
 
   let query = 'SELECT * FROM urls WHERE user_id = ?';
   const params: any[] = [user.id];

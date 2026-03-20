@@ -8,12 +8,13 @@ export const runtime = 'edge';
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: { days?: string };
+  searchParams: Promise<{ days?: string }>;
 }) {
+  const { days: daysParam } = await searchParams;
   const user = (await getCurrentUser())!;
   const db = getDB();
   const limits = TIER_LIMITS[user.tier];
-  const days = parseInt(searchParams.days || '7');
+  const days = parseInt(daysParam || '7');
   const since = new Date(Date.now() - days * 86400000).toISOString();
 
   const [urlCount, totalClicks, recentClicks, timeline, topUrls] = await Promise.all([

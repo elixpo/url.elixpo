@@ -11,14 +11,15 @@ export default async function UrlDetailPage({
   searchParams,
 }: {
   params: Promise<{ code: string }>;
-  searchParams: { days?: string };
+  searchParams: Promise<{ days?: string }>;
 }) {
+  const { days: daysParam } = await searchParams;
   const user = (await getCurrentUser())!;
   const { code } = await params;
   const db = getDB();
   const env = getEnv();
   const limits = TIER_LIMITS[user.tier];
-  const days = Math.min(parseInt(searchParams.days || '7'), limits.maxClicksRetention);
+  const days = Math.min(parseInt(daysParam || '7'), limits.maxClicksRetention);
   const since = new Date(Date.now() - days * 86400000).toISOString();
 
   const url = await db.prepare('SELECT * FROM urls WHERE short_code = ? AND user_id = ?')

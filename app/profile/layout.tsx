@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import Sidebar from '@/app/components/Sidebar';

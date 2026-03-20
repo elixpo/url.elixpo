@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/auth';
 import { getDB } from '@/lib/db';
-import { TIER_LIMITS, type Tier } from '@/lib/types';
+import { TIER_LIMITS } from '@/lib/types';
+import Link from 'next/link';
 import LogoutButton from './LogoutButton';
 
 export const runtime = 'edge';
@@ -10,15 +11,16 @@ export default async function ProfilePage() {
   const db = getDB();
   const limits = TIER_LIMITS[user.tier];
 
-  const [urlCount, keyCount, totalClicks] = await Promise.all([
+  const [urlCount, keyCount, totalClicks, sessionCount] = await Promise.all([
     db.prepare('SELECT COUNT(*) as count FROM urls WHERE user_id = ?').bind(user.id).first<{ count: number }>(),
     db.prepare('SELECT COUNT(*) as count FROM api_keys WHERE user_id = ? AND is_active = 1').bind(user.id).first<{ count: number }>(),
     db.prepare('SELECT COUNT(*) as count FROM clicks c JOIN urls u ON c.url_id = u.id WHERE u.user_id = ?')
       .bind(user.id).first<{ count: number }>(),
+    db.prepare('SELECT COUNT(*) as count FROM sessions WHERE user_id = ? AND expires_at > datetime("now")')
+      .bind(user.id).first<{ count: number }>(),
   ]);
 
   const urlLimit = limits.maxUrls === -1 ? '∞' : limits.maxUrls;
-  const tiers: Tier[] = ['free', 'pro', 'business', 'enterprise'];
 
   return (
     <div>
@@ -29,7 +31,7 @@ export default async function ProfilePage() {
         <div className="glass-card p-6">
           <h2 className="text-sm font-semibold mb-4">Account</h2>
           <div className="flex items-center gap-4 mb-5">
-            <div className="w-16 h-16 rounded-full bg-lime-dim border border-lime-border flex items-center justify-center text-2xl font-bold text-lime-main overflow-hidden">
+            <div className="w-16 h-16 rounded-full bg-lime-dim border border-lime-border flex items-center justify-center text-2xl font-display font-bold text-lime-main overflow-hidden">
               {user.avatar_url ? (
                 <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
@@ -51,6 +53,10 @@ export default async function ProfilePage() {
             <div className="flex justify-between">
               <span className="text-text-muted">Elixpo ID</span>
               <span className="text-text-secondary font-mono text-xs">{user.elixpo_id}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-text-muted">Provider</span>
+              <span className="text-text-secondary">Elixpo Accounts</span>
             </div>
             <div className="flex justify-between">
               <span className="text-text-muted">Member since</span>
@@ -91,38 +97,55 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      {/* Plans */}
+      {/* Settings */}
       <div className="glass-card p-6 mb-6">
-        <h2 className="text-sm font-semibold mb-4">Plans</h2>
-        <div className="grid grid-cols-4 gap-4">
-          {tiers.map((tier) => {
-            const tl = TIER_LIMITS[tier];
-            const isCurrent = user.tier === tier;
-            return (
-              <div key={tier} className="p-5 rounded-xl border transition-all" style={{
-                borderColor: isCurrent ? 'rgba(163, 230, 53, 0.3)' : 'rgba(255,255,255,0.1)',
-                background: isCurrent ? 'rgba(163, 230, 53, 0.04)' : 'transparent',
-              }}>
-                <div className="font-semibold capitalize mb-1">{tier}</div>
-                {isCurrent && <span className="badge bg-lime-dim text-lime-main border border-lime-border mb-3 inline-block">Current</span>}
-                <div className="space-y-1.5 text-xs text-text-secondary mt-2">
-                  <div>{tl.maxUrls === -1 ? 'Unlimited' : tl.maxUrls} URLs</div>
-                  <div>{tl.maxApiKeys} API keys</div>
-                  <div>{tl.maxClicksRetention}d analytics</div>
-                  <div>{tl.customCodes ? '✓' : '✗'} Custom codes</div>
-                  <div>{tl.analytics ? '✓' : '✗'} Analytics</div>
-                  <div>{tl.expiringLinks ? '✓' : '✗'} Expiring links</div>
-                </div>
-              </div>
-            );
-          })}
+        <h2 className="text-sm font-semibold mb-4">Settings</h2>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between py-3 border-b border-border-light">
+            <div>
+              <div className="text-sm font-medium">Default redirect type</div>
+              <div className="text-xs text-text-muted mt-0.5">HTTP 302 temporary redirect for all short URLs</div>
+            </div>
+            <span className="text-xs text-text-disabled font-mono px-2.5 py-1 rounded-lg" style={{ background: 'rgba(255,255,255,0.05)' }}>302</span>
+          </div>
+          <div className="flex items-center justify-between py-3 border-b border-border-light">
+            <div>
+              <div className="text-sm font-medium">API Keys</div>
+              <div className="text-xs text-text-muted mt-0.5">Manage your API keys for programmatic access</div>
+            </div>
+            <Link href="/profile/keys" className="btn-glass text-xs no-underline">Manage</Link>
+          </div>
+          <div className="flex items-center justify-between py-3 border-b border-border-light">
+            <div>
+              <div className="text-sm font-medium">Active sessions</div>
+              <div className="text-xs text-text-muted mt-0.5">Sessions expire after 15 days of inactivity</div>
+            </div>
+            <span className="text-xs text-text-secondary">{sessionCount?.count || 0} active</span>
+          </div>
+          <div className="flex items-center justify-between py-3">
+            <div>
+              <div className="text-sm font-medium">Connected account</div>
+              <div className="text-xs text-text-muted mt-0.5">Managed by Elixpo Accounts SSO</div>
+            </div>
+            <a
+              href="https://accounts.elixpo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-glass text-xs no-underline"
+            >
+              Manage Account
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* Session */}
-      <div className="glass-card p-6">
+      {/* Danger zone */}
+      <div className="glass-card p-6" style={{ borderColor: 'rgba(239, 68, 68, 0.15)' }}>
         <div className="flex justify-between items-center">
-          <h2 className="text-sm font-semibold">Session</h2>
+          <div>
+            <h2 className="text-sm font-semibold text-[#f87171]">Sign Out</h2>
+            <p className="text-xs text-text-muted mt-0.5">End your current session on this device</p>
+          </div>
           <LogoutButton />
         </div>
       </div>
