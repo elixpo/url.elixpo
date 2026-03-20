@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { code } = await params;
 
   if (SKIP_PATHS.has(code)) {
-    return new NextResponse(null, { status: 404 });
+    return notFoundPage(request);
   }
 
   const kv = getKV();
@@ -19,7 +19,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const cached = await kv.get(`url:${code}`);
   if (cached) {
     const { url, id } = JSON.parse(cached);
-    // Fire-and-forget: use waitUntil to truly detach click tracking from response
     const db = getDB();
     scheduleTracking(db, id, request);
     return redirect(url);
@@ -33,13 +32,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     .first<{ id: number; original_url: string; is_active: number; expires_at: string | null }>();
 
   if (!urlRecord || !urlRecord.is_active) {
-    return new NextResponse(null, { status: 404 });
+    return notFoundPage(request);
   }
 
   if (urlRecord.expires_at && new Date(urlRecord.expires_at) < new Date()) {
-    // Clean up expired entry from KV
     kv.delete(`url:${code}`).catch(() => {});
-    return new NextResponse('This link has expired', { status: 410 });
+    return notFoundPage(request);
   }
 
   // Re-populate KV cache with appropriate TTL
@@ -52,6 +50,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   scheduleTracking(db, urlRecord.id, request);
   return redirect(urlRecord.original_url);
+}
+
+/** Rewrite to the not-found page so the user sees a proper 404 UI */
+function notFoundPage(request: NextRequest): NextResponse {
+  const url = new URL('/not-found', request.url);
+  return NextResponse.rewrite(url, { status: 404 });
 }
 
 /** Build a 302 redirect with cache-friendly headers */
