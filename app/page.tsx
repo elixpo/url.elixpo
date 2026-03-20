@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import Footer from './components/Footer';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -42,25 +43,19 @@ export default function LandingPage() {
           </span>
         </Link>
         <div className="flex items-center gap-6">
-          <Link
-            href="/pricing"
-            className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline"
-          >
+          <Link href="/pricing" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
             Pricing
           </Link>
-          <Link
-            href="/docs"
-            className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline"
-          >
+          <Link href="/docs" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
             Docs
           </Link>
-          <Link
-            href="/login"
-            className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline"
-          >
+          <Link href="/profile/keys" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
+            API Keys
+          </Link>
+          <Link href="/api/auth/login" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
             Sign In
           </Link>
-          <Link href="/login" className="btn-lime no-underline text-sm">
+          <Link href="/api/auth/login" className="btn-lime no-underline text-sm">
             Get Started
           </Link>
         </div>
@@ -124,7 +119,7 @@ export default function LandingPage() {
           className="flex items-center justify-center gap-4"
         >
           <Link
-            href="/login"
+            href="/api/auth/login"
             className="btn-lime no-underline px-8 py-3 text-base rounded-2xl glow-lime-sm"
           >
             Start Shortening
@@ -134,48 +129,35 @@ export default function LandingPage() {
           </Link>
         </motion.div>
 
-        {/* Demo URL bar */}
+        {/* Free tier callout */}
         <motion.div
           custom={4}
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="mt-16 w-full max-w-2xl glass-card p-1.5 flex items-center gap-2"
+          className="mt-12 inline-flex items-center gap-3 px-5 py-3 rounded-2xl"
+          style={{
+            background: 'rgba(134, 239, 172, 0.05)',
+            border: '1px solid rgba(134, 239, 172, 0.15)',
+          }}
         >
-          <div className="flex-1 px-4 py-3 text-sm text-text-muted truncate text-left font-mono">
-            https://example.com/very/long/url/that/needs/shortening
-          </div>
-          <div
-            className="px-6 py-3 rounded-xl text-sm font-semibold font-mono shrink-0"
-            style={{ background: 'rgba(163, 230, 53, 0.15)', color: '#a3e635' }}
+          <span
+            className="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-lg"
+            style={{
+              background: 'rgba(134, 239, 172, 0.12)',
+              color: '#86efac',
+              border: '1px solid rgba(134, 239, 172, 0.25)',
+            }}
           >
-            url.elixpo.com/abc123
-          </div>
+            Free Tier
+          </span>
+          <span className="text-sm text-text-secondary">
+            25 short URLs, 1 API key, and basic analytics — <span className="text-sage-main font-medium">no credit card required</span>
+          </span>
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-border-light py-8 px-8 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image src="/logo.png" alt="" width={20} height={20} className="rounded" />
-            <span className="text-sm text-text-muted">
-              <span className="text-lime-main">Elixpo</span>URL
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/pricing" className="text-xs text-text-disabled hover:text-text-secondary transition-colors no-underline">
-              Pricing
-            </Link>
-            <Link href="/docs" className="text-xs text-text-disabled hover:text-text-secondary transition-colors no-underline">
-              Docs
-            </Link>
-          </div>
-          <p className="text-xs text-text-disabled">
-            &copy; {new Date().getFullYear()} Elixpo. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

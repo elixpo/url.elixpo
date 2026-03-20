@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import Footer from '../components/Footer';
 
 const sections = [
   {
@@ -102,10 +103,13 @@ export default function DocsPage() {
           <Link href="/docs" className="text-sm text-lime-main no-underline">
             Docs
           </Link>
-          <Link href="/login" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
+          <Link href="/profile/keys" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
+            API Keys
+          </Link>
+          <Link href="/api/auth/login" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">
             Sign In
           </Link>
-          <Link href="/login" className="btn-lime no-underline text-sm">
+          <Link href="/api/auth/login" className="btn-lime no-underline text-sm">
             Get Started
           </Link>
         </div>
@@ -198,28 +202,7 @@ export default function DocsPage() {
         ))}
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-border-light py-8 px-8 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image src="/logo.png" alt="" width={20} height={20} className="rounded" />
-            <span className="text-sm text-text-muted">
-              <span className="text-lime-main">Elixpo</span>URL
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/pricing" className="text-xs text-text-disabled hover:text-text-secondary transition-colors no-underline">
-              Pricing
-            </Link>
-            <Link href="/docs" className="text-xs text-text-disabled hover:text-text-secondary transition-colors no-underline">
-              Docs
-            </Link>
-          </div>
-          <p className="text-xs text-text-disabled">
-            &copy; {new Date().getFullYear()} Elixpo. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
