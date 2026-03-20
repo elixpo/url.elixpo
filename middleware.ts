@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const PROTECTED_PATHS = ['/dashboard', '/profile', '/admin'];
-const ADMIN_PATHS = ['/admin'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -18,16 +17,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // Root redirect
-  if (pathname === '/') {
-    return NextResponse.redirect(
-      new URL(sessionCookie ? '/dashboard' : '/login', request.url)
-    );
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/', '/login', '/dashboard/:path*', '/profile/:path*', '/admin/:path*'],
+  matcher: ['/login', '/dashboard/:path*', '/profile/:path*', '/admin/:path*'],
 };
