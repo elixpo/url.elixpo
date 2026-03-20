@@ -4,10 +4,15 @@ import { getDB, getKV, getEnv } from '@/lib/db';
 import { generateShortCode } from '@/lib/utils';
 import { TIER_LIMITS, type UrlRecord } from '@/lib/types';
 import { validateUrl, validateLength, validateFutureDate, clampInt, badRequest } from '@/lib/validate';
+import { rateLimit } from '@/lib/ratelimit';
 
 export const runtime = 'edge';
 
 export async function POST(request: NextRequest) {
+  // 30 URL creations per minute per IP
+  const limited = await rateLimit(request, 'url:create', 30, 60);
+  if (limited) return limited;
+
   const user = await resolveUser(request);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

@@ -53,14 +53,14 @@ export async function getUserFromApiKey(authHeader: string): Promise<User | null
 
   const row = await db
     .prepare(
-      `SELECT ak.id as ak_id, u.* FROM api_keys ak JOIN users u ON ak.user_id = u.id
-       WHERE ak.key_hash = ? AND ak.is_active = 1 AND u.is_active = 1`
+      `SELECT ak.id as ak_id, ak.scopes as ak_scopes, u.* FROM api_keys ak JOIN users u ON ak.user_id = u.id
+       WHERE ak.key_hash = ? AND ak.is_active = 1 AND u.is_active = 1
+       AND (ak.expires_at IS NULL OR ak.expires_at > datetime('now'))`
     )
     .bind(keyHash)
     .first<any>();
 
   if (!row) return null;
-  if (row.expires_at && new Date(row.expires_at) < new Date()) return null;
 
   // Update last_used_at (fire and forget)
   db.prepare('UPDATE api_keys SET last_used_at = datetime("now") WHERE id = ?')

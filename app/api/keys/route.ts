@@ -4,10 +4,15 @@ import { getDB } from '@/lib/db';
 import { generateApiKey, hashApiKey } from '@/lib/utils';
 import { TIER_LIMITS } from '@/lib/types';
 import { validateLength, isValidScopes, badRequest } from '@/lib/validate';
+import { rateLimit } from '@/lib/ratelimit';
 
 export const runtime = 'edge';
 
 export async function POST(request: NextRequest) {
+  // 10 key creations per minute per IP
+  const limited = await rateLimit(request, 'key:create', 10, 60);
+  if (limited) return limited;
+
   const user = await resolveUser(request);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

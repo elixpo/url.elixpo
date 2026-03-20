@@ -55,8 +55,14 @@ export function parseUserAgent(ua: string | null): { device: string; browser: st
 
 export function hashIp(ip: string | null): string | null {
   if (!ip) return null;
-  const parts = ip.split('.');
-  if (parts.length === 4) return `${parts[0]}.${parts[1]}.x.x`;
+  // IPv4: mask to /16
+  const v4Parts = ip.split('.');
+  if (v4Parts.length === 4) return `${v4Parts[0]}.${v4Parts[1]}.x.x`;
+  // IPv6: keep first 4 segments (mask to /64)
+  if (ip.includes(':')) {
+    const segments = ip.split(':').slice(0, 4);
+    return `${segments.join(':')}::`;
+  }
   return null;
 }
 

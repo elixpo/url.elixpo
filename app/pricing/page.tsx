@@ -172,7 +172,7 @@ export default function PricingPage() {
 
       {/* Pricing cards */}
       <section className="relative z-10 max-w-7xl mx-auto px-8 py-16 flex-1">
-        <div className="grid grid-cols-4 gap-5 items-start">
+        <div className="grid grid-cols-4 gap-5 items-stretch">
           {tiers.map((tier, i) => {
             const isHovered = hoveredTier === tier.name;
             const isPopular = tier.popular;
