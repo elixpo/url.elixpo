@@ -11,13 +11,17 @@ BOLD='\033[1m'
 RESET='\033[0m'
 
 usage() {
-  echo -e "${BOLD}Usage:${RESET} ./deploy.sh <command>"
+  echo -e "${BOLD}Usage:${RESET} ./deploy.sh <command> [command...]"
   echo ""
-  echo "Commands:"
+  echo "Commands (can be chained):"
   echo "  build     Build the Next.js app with @cloudflare/next-on-pages"
   echo "  deploy    Deploy to Cloudflare Pages (builds first if needed)"
   echo "  all       Build and deploy in one step"
   echo "  migrate   Run D1 database migrations (remote)"
+  echo ""
+  echo "Examples:"
+  echo "  ./deploy.sh build deploy"
+  echo "  ./deploy.sh migrate build deploy"
   exit 1
 }
 
@@ -56,12 +60,22 @@ do_migrate() {
   log "Migrations applied"
 }
 
+run_cmd() {
+  case "$1" in
+    build)   do_build ;;
+    deploy)  do_deploy ;;
+    all)     do_build && do_deploy ;;
+    migrate) do_migrate ;;
+    *)       err "Unknown command: $1"; usage ;;
+  esac
+}
+
 check_deps
 
-case "${1:-}" in
-  build)   do_build ;;
-  deploy)  do_deploy ;;
-  all)     do_build && do_deploy ;;
-  migrate) do_migrate ;;
-  *)       usage ;;
-esac
+if [ $# -eq 0 ]; then
+  usage
+fi
+
+for cmd in "$@"; do
+  run_cmd "$cmd"
+done
