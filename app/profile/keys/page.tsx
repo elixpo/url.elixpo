@@ -255,38 +255,6 @@ export default function ApiKeysPage() {
               </button>
             </form>
 
-            {/* New key result */}
-            {newKey && (
-              <div
-                className="mt-6 p-4 rounded-xl"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(251,191,36,0.06), rgba(251,191,36,0.02))',
-                  border: '1px solid rgba(251,191,36,0.2)',
-                  animation: 'fade-in-up 0.4s ease-out',
-                }}
-              >
-                <div className="text-[0.65rem] text-honey-main mb-2.5 font-semibold uppercase tracking-wider">
-                  Copy now — shown only once
-                </div>
-                <div
-                  className="flex items-center gap-2 p-3 rounded-lg"
-                  style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }}
-                >
-                  <code className="text-sm text-text-primary break-all flex-1 font-mono">{newKey}</code>
-                  <button
-                    onClick={() => handleCopy(newKey)}
-                    className="shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer"
-                    style={{
-                      background: copied ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.08)',
-                      color: copied ? '#22c55e' : '#f5f5f4',
-                      border: `1px solid ${copied ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.15)'}`,
-                    }}
-                  >
-                    {copied ? 'Copied!' : 'Copy'}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -410,6 +378,99 @@ export default function ApiKeysPage() {
           </div>
         </div>
       </div>
+
+      {/* API Key Modal */}
+      {newKey && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ animation: 'modal-in 0.3s ease-out' }}
+        >
+          {/* Blurred backdrop */}
+          <div
+            className="absolute inset-0"
+            style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)' }}
+          />
+
+          {/* Modal card */}
+          <div
+            className="relative w-full max-w-md rounded-2xl p-[1px]"
+            style={{
+              background: 'linear-gradient(135deg, rgba(251,191,36,0.3), rgba(163,230,53,0.15), rgba(255,255,255,0.05))',
+              animation: 'fade-in-up 0.4s ease-out',
+            }}
+          >
+            <div
+              className="rounded-2xl p-8"
+              style={{
+                background: 'linear-gradient(135deg, rgba(16,24,12,0.97), rgba(12,15,10,0.98))',
+                boxShadow: '0 30px 80px -20px rgba(0,0,0,0.7), 0 0 60px rgba(251,191,36,0.06)',
+              }}
+            >
+              {/* Warning icon */}
+              <div className="flex justify-center mb-5">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center"
+                  style={{
+                    background: 'rgba(251,191,36,0.1)',
+                    border: '1px solid rgba(251,191,36,0.25)',
+                    boxShadow: '0 0 20px rgba(251,191,36,0.08)',
+                  }}
+                >
+                  <svg viewBox="0 0 20 20" fill="none" stroke="#fbbf24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                    <circle cx="7.5" cy="12.5" r="3.5" />
+                    <path d="M10.2 9.8L16 4M14 4l2 2M12.5 6.5l2 2" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-display font-bold text-text-primary mb-1">Your API Key</h3>
+                <p className="text-xs text-text-muted">
+                  This key will only be shown once. Copy it now and store it somewhere safe.
+                </p>
+              </div>
+
+              {/* Key field with inline copy */}
+              <div
+                className="relative flex items-center rounded-xl mb-6"
+                style={{
+                  background: 'rgba(0,0,0,0.4)',
+                  border: '1px solid rgba(251,191,36,0.2)',
+                }}
+              >
+                <code className="text-sm text-text-primary break-all flex-1 font-mono px-4 py-3.5 pr-20">
+                  {newKey}
+                </code>
+                <button
+                  onClick={() => handleCopy(newKey)}
+                  className="absolute right-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer"
+                  style={{
+                    background: copied ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.08)',
+                    color: copied ? '#22c55e' : '#f5f5f4',
+                    border: `1px solid ${copied ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.15)'}`,
+                  }}
+                >
+                  {copied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+
+              {/* Dismiss button */}
+              <button
+                onClick={() => setNewKey('')}
+                className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(163,230,53,0.18), rgba(134,239,172,0.12))',
+                  color: '#a3e635',
+                  border: '1px solid rgba(163, 230, 53, 0.3)',
+                  boxShadow: '0 0 30px rgba(163,230,53,0.08)',
+                }}
+              >
+                I have saved my credentials
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes pulse-glow {
