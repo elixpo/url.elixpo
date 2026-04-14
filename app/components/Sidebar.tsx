@@ -147,18 +147,16 @@ export default function Sidebar({ user }: { user: User }) {
       className="fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 h-14 border-b border-border-light"
       style={{ background: 'rgba(16, 24, 12, 0.92)', backdropFilter: 'blur(20px)' }}
     >
-      {/* Left: Logo + Nav items */}
+      {/* Left: Logo */}
+      <Link href="/dashboard" className="flex items-center gap-2 no-underline shrink-0">
+        <Image src="/logo.png" alt="ElixpoURL" width={26} height={26} className="rounded-lg" />
+        <span className="text-base font-display font-bold text-text-primary hidden sm:inline">
+          <span className="text-lime-main">Elixpo</span>URL
+        </span>
+      </Link>
+
+      {/* Right: Nav icons + Account dropdown */}
       <div className="flex items-center gap-1 sm:gap-2">
-        <Link href="/dashboard" className="flex items-center gap-2 no-underline mr-3 sm:mr-5 shrink-0">
-          <Image src="/logo.png" alt="ElixpoURL" width={26} height={26} className="rounded-lg" />
-          <span className="text-base font-display font-bold text-text-primary hidden sm:inline">
-            <span className="text-lime-main">Elixpo</span>URL
-          </span>
-        </Link>
-
-        {/* Divider */}
-        <div className="w-px h-6 bg-border-light mr-1 sm:mr-2 hidden sm:block" />
-
         {/* Main nav icons */}
         {navItems.map((item) => (
           <NavIcon key={item.href} {...item} />
@@ -173,10 +171,12 @@ export default function Sidebar({ user }: { user: User }) {
             ))}
           </>
         )}
-      </div>
 
-      {/* Right: Account dropdown */}
-      <div className="relative" ref={dropdownRef}>
+        {/* Divider before account */}
+        <div className="w-px h-6 bg-border-light ml-1 sm:ml-2" />
+
+        {/* Account dropdown */}
+        <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setAccountOpen(!accountOpen)}
           className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-bg-glass transition-all duration-200 bg-transparent border-none cursor-pointer group"
@@ -240,6 +240,7 @@ export default function Sidebar({ user }: { user: User }) {
             </div>
           </div>
         )}
+        </div>
       </div>
     </header>
   );

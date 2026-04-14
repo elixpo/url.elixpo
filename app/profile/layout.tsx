@@ -11,7 +11,7 @@ export default async function ProfileLayout({ children }: { children: React.Reac
   return (
     <div className="min-h-screen bg-gradient-page">
       <Sidebar user={user} />
-      <main className="pt-20 p-4 sm:p-8">{children}</main>
+      <main className="px-4 sm:px-8 pb-4 sm:pb-8 pt-20 sm:pt-24">{children}</main>
     </div>
   );
 }
