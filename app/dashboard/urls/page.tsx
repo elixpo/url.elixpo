@@ -34,7 +34,7 @@ export default async function UrlsPage({
   const totalPages = Math.ceil((total?.count || 0) / limit);
 
   return (
-    <div>
+    <div className="mt-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-2xl font-display font-bold text-text-primary">My URLs</h1>
         <Link href="/dashboard/new" className="btn-lime no-underline">+ Shorten URL</Link>
